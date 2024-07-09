@@ -4,11 +4,10 @@ import axios from "axios";
 
 const urlApi = DEFAULT_API_URLS_OVVO[enviroment.getEnviroment()];
 
-export function ConsultaPSC() {
-  let data = "";
+export function ConsultaPSC(data) {
   return new Promise((resolve, reject) => {
     axios
-      .post(urlApi + "/ConsultaPSC/", data, {
+      .post(urlApi + "/login/", data, {
         headers: { "Content-Type": "application/json" },
       })
       .then((res) => resolve(res))
