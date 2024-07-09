@@ -1,0 +1,13 @@
+@import "../../globals//variables.scss";
+
+.icon {
+  color: #464646;
+}
+
+.icon:hover {
+  color: $blue-app-color;
+}
+
+.calendario {
+  padding: 6px;
+}

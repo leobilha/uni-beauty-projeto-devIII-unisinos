@@ -1,0 +1,25 @@
+.container-accessError {
+    color: #161a59;
+}
+
+.container-accessError__text ul{
+    padding: 10px 10px 0px;
+}
+
+.container-accessError__text li{
+    font-weight: 600;
+    list-style: none;
+    line-height: 1.9rem;
+}
+
+.ilustracao__erro, .container-accessError__text{
+    width: 70%;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .container-accessError__text ul{
+        padding: 5px 0px;
+      
+    }
+}

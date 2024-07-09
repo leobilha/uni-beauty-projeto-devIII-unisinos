@@ -1,0 +1,36 @@
+.container-manutencao {
+    color: #161a59;
+}
+
+.container-manutencao__text ul{
+    padding: 10px 10px 0px;
+}
+
+.container-manutencao__text li{
+    font-weight: 600;
+    font-size: 1.3rem;
+    list-style: none;
+    line-height: 1.9rem;
+}
+
+.container-manutencao__text{
+    text-align: center;
+}
+
+.manutencao_img{
+    width: 60vw;
+    margin: 0 auto;
+    height: 60vh;
+}
+
+@media (max-width: 768px) {
+    .container-manutencao__text ul{
+        padding: 5px 0px;
+      
+    }
+
+    .manutencao_img {
+        width: 98vw;
+        height: 40vh;
+    }
+}

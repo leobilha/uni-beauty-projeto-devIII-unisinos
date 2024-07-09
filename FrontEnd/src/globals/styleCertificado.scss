@@ -1,0 +1,162 @@
+.icones-certificado {
+    margin-right: 10px;
+}
+.icones-pfx {
+    height: 40px;
+    width: 40px;
+}
+
+.certificado-header {
+    background-color: #fff;
+}
+
+.certificado-header,
+.nav-tabs {
+    border-bottom: 0px;
+    justify-content: flex-start;
+}
+
+.nav-item li {
+    color: #000;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > .nav-tabs > li.active > {
+    color: black;
+    border: 1px solid #fff;
+    border-bottom: transparent;
+    background: #fff;
+    font-weight: normal;
+    color: #333;   
+}
+
+.nav-tabs .nav-link {
+    margin-left: -1px;
+    font-size: 0.85rem;
+    color: #000;
+}
+
+.nav-tabs .nav-link:hover {
+    border-bottom: 1px solid #fff;
+}
+
+.nav-link.active {
+    padding: 8px;
+    margin-top: -5px;
+    border-radius: 2px;
+    font-weight: 800;
+}
+
+.certificado-container {
+    width: 95%;
+    margin: 0 auto;
+    margin-top: 10px;
+    height: 550px;
+    cursor: context-menu;
+}
+
+.modal-personalizado {
+    width: 500px; 
+}
+.modal-content {
+    background-color: #f6f6f6;
+}
+
+.container-geral__interno {
+    padding: 20px;
+    color: black;
+}
+
+.container-titulo-geral {
+    padding: 10px 5px 0px;
+    font-weight: bold;
+}
+
+.container-detalhes {
+    font-weight: normal;
+    font-size: 0.85rem;
+}
+
+.container-titulo {
+    padding: 10px 5px;
+}
+
+.titulo {
+    font-size: 0.85rem;
+    color: #000;
+}
+
+.filtroDetalhes {
+    margin-left: 25px;
+}
+
+.status-geral {
+    height: 150px;
+}
+
+.items ul {
+    padding-left: 0rem;
+}
+
+.items li {
+    list-style: none;
+    font-weight: normal;
+    padding: 10px 0px;
+    font-size: 0.85rem;
+}
+
+hr {
+    border: 0.9px solid #000;
+    opacity: 0.7;
+}
+
+.table-geral td {
+    border-bottom-width: 0;
+}
+
+.table-responsive-detalhes {
+    height: 246px;
+}
+
+.table-detalhes {
+    table-layout: fixed;
+}
+
+.th-detalhes {
+    width: 200px;
+    font-family: "Scheherazade New", serif;
+    font-weight: normal;
+    font-size: 0.85rem;
+}
+.tbody-detalhes th {
+    padding: 0.3rem;
+}
+
+.tbody-detalhes td {
+    padding: 0.3rem;
+}
+
+.td-detalhes {
+    width: 300px;
+    background-color: #f1f1f1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: "Scheherazade New", serif;
+    font-size: 0.85rem;
+}
+
+.area-descricao {
+    background-color: #fff;
+    color: #000;
+    font-size: 14px;
+    padding: 1px 5px;
+    resize: none;
+    border-radius: 6px;
+    border: none;
+}
+
+.footer-modal-certificado {
+    border-top: 0;
+    padding: 0.4rem;
+}

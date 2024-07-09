@@ -1,0 +1,251 @@
+@use "sass:math";
+@import "./variables.scss";
+
+// Local para os estilos de classes globais comuns a diversas telas
+
+body {
+  font-family: "Open Sans", sans-serif;
+  margin: 0;
+}
+
+input.form-control {
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+  border: 1px solid #ced4daff;
+
+  &::placeholder,
+  &.placeholder {
+    color: $softGrey-color;
+    font-weight: 100;
+  }
+}
+
+input[type="radio"] {
+  flex-shrink: 0;
+
+  &,
+  & + Label {
+    cursor: pointer;
+  }
+}
+
+.form-control,
+.formContent {
+  color: black;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-width: 1px;
+}
+
+textarea {
+  resize: none;
+}
+
+.formContent {
+  border: 1px solid transparent;
+}
+
+label {
+  color: $grey-color;
+  font-size: 13.5px;
+  font-weight: 600;
+  //   padding: 0px 9.5px;
+}
+
+.form-check-label {
+  padding: 0px;
+}
+
+.title + .page {
+  margin-top: 0 !important;
+}
+
+.container {
+  &.header {
+    max-width: 98%;
+    height: fit-content;
+    padding: 1rem 0;
+  }
+
+  &.page {
+    max-width: 1086px;
+    margin-top: $base-pageDivider;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 1220px) {
+    &.page {
+      max-width: 910px;
+    }
+  }
+
+  @media (max-width: 990px) {
+    &.header {
+      max-width: 100%;
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+    &.page {
+      max-width: 95%;
+    }
+  }
+}
+
+small {
+  font-size: 0.876rem;
+  &.x2,
+  .x2 {
+    font-size: 0.798rem;
+    font-weight: 700;
+  }
+}
+
+.td-eeas {
+  text-align: left;
+}
+
+.fas.fa-search {
+  font-weight: bold;
+  color: $black-color;
+}
+.fas.fa-search:hover {
+  font-weight: bold;
+  color: #0456d1;
+}
+.fas.fa-search.disabled:hover {
+  font-weight: bold;
+  color: #070822;
+}
+
+.fas.fa-edit {
+  font-weight: bold;
+  color: $black-color;
+}
+.fas.fa-edit:hover {
+  font-weight: bold;
+  color: #0456d1;
+}
+.fas.fa-edit.disabled {
+  font-weight: bold;
+  color: #272727;
+}
+
+.fas.fa-undo {
+  font-weight: bold;
+  color: $black-color;
+}
+.fas.fa-undo:hover {
+  font-weight: bold;
+  color: #04d11f;
+}
+.fas.fa-undo.disabled:hover {
+  font-weight: bold;
+  color: #272727;
+}
+
+.fas.fa-save {
+  font-weight: bold;
+  color: #009b22;
+}
+.fas.fa-save:hover {
+  font-weight: bold;
+  color: #04d130;
+}
+.fas.fa-save.disabled {
+  font-weight: bold;
+  color: #272727;
+}
+
+.fas.fa-ban:hover {
+  font-weight: bold;
+  color: #d10404;
+}
+
+// Espaço para as rows
+.space-line {
+  margin-bottom: $base-pageDivider;
+}
+
+.crud-eeas {
+  padding: 30px;
+}
+
+.fw-bolder {
+  color: black;
+}
+
+.Toastify__toast-container {
+  display: table;
+}
+
+#raiz {
+  position: fixed;
+  background: $grayTransparent-color;
+  width: 100%;
+  z-index: 3;
+  &.hide {
+    height: 0;
+    opacity: 0;
+    -webkit-transition: opacity 0.8s, height 0.8s step-end;
+    -moz-transition: opacity 0.8s, height 0.8s step-end;
+    transition: opacity 0.8s, height 0.8s step-end;
+  }
+  &.show {
+    height: 100%;
+    opacity: 1;
+    -webkit-transition: opacity 0.8s;
+    -moz-transition: opacity 0.8s;
+    transition: opacity 0.8s;
+  }
+}
+
+.form-check-input:focus {
+  box-shadow: none;
+}
+
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.highlight-class {
+  box-shadow: rgba(0, 0, 0, 0.8) 0px 0px 0px 0px,
+    rgb(0 0 0 / 50%) 0px 0px 0px 5000px !important;
+}
+
+.tutorial-button {
+  margin-left: 30px;
+  background: $blue-app-color;
+  &:hover {
+    background: $blue-title-color;
+  }
+}
+
+.introjs-button {
+  border: none;
+  text-shadow: none;
+  background: $blue-app-color;
+  color: #fafafa;
+  &:hover {
+    background: $blue-title-color;
+    color: #fafafa;
+  }
+  &:active,
+  &:focus {
+    background: $blue-app-color;
+    color: #fafafa;
+    border: none;
+    box-shadow: none;
+    &:hover {
+      background: $blue-title-color;
+      color: #fafafa;
+    }
+  }
+}
+.introjs-tooltipbuttons {
+  border: none;
+}
+.redColor {
+  color: #C00000;
+}
