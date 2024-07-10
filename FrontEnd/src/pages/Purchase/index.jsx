@@ -1,49 +1,82 @@
-import * as React from 'react';
+import React, { useState, useEffect } from "react";
 import { createTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper, Typography, Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
+import axios from "axios";
+import Card from "../../components/Card";
+import "./styles.scss";
+import Loader from "../../components/Loader";
 
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
   const navigate = useNavigate();
-  const [userType, setUserType] = React.useState('cliente');
+  const [produtos, setProdutos] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [busca, setBusca] = useState("");
+  const [produtosFiltrados, setProdutosFiltrados] = useState([]);
 
-  const handleUserTypeChange = (event) => {
-    setUserType(event.target.value);
-  };
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get("https://www.obrazul.com.br/api/recruitment/products/")
+      .then((res) => {
+        setProdutos(res.data.products);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const handleLogout = () => {
     navigate('/login');
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get('email');
-    const password = data.get('password');
+  useEffect(() => {
+    setProdutosFiltrados(
+      produtos.filter((produto) =>
+        produto.name.toLowerCase().includes(busca.toLowerCase())
+      )
+    );
+  }, [busca, produtos]);
 
-    if (email === 'usuario@exemplo.com' && password === 'senha123') {
-      if (userType === 'cliente') {
-        navigate('/cliente');
-      } else {
-        navigate('/dashboard');
-      }
-    } else {
-      alert('Login ou senha incorretos');
-    }
-  };
+  if (loading) {
+    return <Loader />
+  }
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Bem-vindo ao Uni Beauty!
-      </Typography>
-      <Box sx={{ mt: 4 }}>
-        <Button variant="contained" color="secondary" onClick={handleLogout}>
-          Sair
-        </Button>
-      </Box>
-    </Box>
+    <>
+      <div className="central">
+        <div className="content">
+          <Box sx={{ mt: 4, ml: 149 }}>
+            <Button variant="contained" color="secondary" onClick={handleLogout}>
+              Sair
+            </Button>
+          </Box>
+          <div className="filter">
+            <input
+              className="inputPurchase"
+              type="text"
+              placeholder="Pesquisa..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
+          </div>
+          <div className="container">
+            {produtosFiltrados.map((item) => (
+              <Card
+                name={item.name}
+                ean={item.ean}
+                fullname={item.fullname}
+                price={item.price}
+                picture={item.picture}
+              ></Card>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
   );
-}
+};
+

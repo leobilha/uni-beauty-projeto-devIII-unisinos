@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthContext } from "../globals/AuthContext";
 
 // Páginas
 import SignInSide from "../pages/SignInSide";
@@ -9,8 +8,6 @@ import Dashboard from "../pages/Dashboard";
 import Purchase from "../pages/Purchase";
 
 const Router = () => {
-  const { autenticated } = useContext(AuthContext);
-
   return (
     <main>
       <div id="raiz"></div>

@@ -4,7 +4,7 @@ import axios from "axios";
 
 const urlApi = DEFAULT_API_URLS[enviroment.getEnviroment()];
 
-export function ConsultaPSC(data) {
+export function Login(data) {
   return new Promise((resolve, reject) => {
     axios
       .post(urlApi + "/user/login/", data, {

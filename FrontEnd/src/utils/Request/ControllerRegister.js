@@ -4,8 +4,7 @@ import axios from "axios";
 
 const urlApi = DEFAULT_API_URLS[enviroment.getEnviroment()];
 
-export function Register(data) {
-  
+export function Register(data) {    
   return new Promise((resolve, reject) => {
     axios
       .post(urlApi + "/user/register", data, {

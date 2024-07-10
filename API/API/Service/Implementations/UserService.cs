@@ -14,8 +14,8 @@ namespace API.Service.Implementations
             _userRepository = userRepository;
         }
 
-        public async Task<User> GetAsync(GetUserDto userDto) => await _userRepository.GetAsync(u => u.Email == userDto.Email);
-
+        public async Task<User> GetAsync(GetUserDto userDto) => await _userRepository.GetAsync(u => u.Email == userDto.Email && 
+                                                                                                    u.Type == userDto.Type);
         public async Task AddAsync(User user)
         {
             try

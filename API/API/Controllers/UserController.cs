@@ -24,12 +24,12 @@ namespace API.Controllers
             {
                 User userBase = await _userService.GetAsync(userRequest);
 
-                if (userBase is null) { return NotFound(new FaultModel { Status = "Erro", Message = "Usuário não existe!" }); }
+                if (userBase is null) { return Ok(new FaultModel { Status = "Erro", Message = "Usuário não existe!" }); }
 
                 if (!await Util.VerifyPassword(userRequest.Password, userBase.Password))
-                    return BadRequest(new FaultModel { Status = "Erro", Message = "Senha incorreta!" });
+                    return Ok(new FaultModel { Status = "Erro", Message = "Senha incorreta!" });
 
-                return Ok(new FaultModel { Status = "Ok", Message = "Usuário logado com sucesso!" });
+                return Ok(userBase.Type);
             }
 
             return BadRequest(new FaultModel
@@ -44,9 +44,9 @@ namespace API.Controllers
         {
             if (ModelState.IsValid)
             {
-                User userBase = await _userService.GetAsync(new GetUserDto { Email = user.Email });
+                User userBase = await _userService.GetAsync(new GetUserDto { Email = user.Email, Type = user.Type });
 
-                if (userBase is not null) { return NotFound(new FaultModel { Status = "Erro", Message = "Usuário já existe!" }); }
+                if (userBase is not null) { return Ok(new FaultModel { Status = "Erro", Message = "Usuário já existe!" }); }
 
                 string hashSenha = await Util.HashPassword(user.Password);
 
@@ -55,11 +55,11 @@ namespace API.Controllers
                     Name = user.Name,
                     Email = user.Email,
                     Password = hashSenha,
-                    Document = user.Document,
+                    Document = await Util.RemoveSpecialCharacters(user.Document),
                     Type = user.Type,
                 });
 
-                return Ok(new FaultModel { Status = "Ok", Message = "Usuário registrado com sucesso!" });
+                return Ok(new FaultModel { Status = "Ok", Message = "Cadastro realizado com sucesso!" });
             }
 
             return BadRequest(new FaultModel

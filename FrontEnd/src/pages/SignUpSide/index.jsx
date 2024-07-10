@@ -17,16 +17,20 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import InputMask from 'react-input-mask';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { useNavigate } from 'react-router-dom';
 
 import Loader from "../../components/Loader";
 
 import { Register } from "../../utils/Request/ControllerRegister";
-import { alertaErro } from "../../functions/functions";
+import { alertaErro, alertaSucesso } from "../../functions/functions";
+import { removeSpecialCharacters } from "../../utils/Utils";
+
 
 const defaultTheme = createTheme();
 
 export default function SignUpSide() {
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const [renderizaPagina, setRenderizaPagina] = useState(false);
   const [userType, setUserType] = React.useState('cliente');
   const [formErrors, setFormErrors] = React.useState({});
@@ -48,7 +52,6 @@ export default function SignUpSide() {
       ...formValues,
       [event.target.name]: event.target.value,
     });
-    // Limpa o erro quando o usuário começa a digitar novamente
     setFormErrors({
       ...formErrors,
       [event.target.name]: '',
@@ -83,42 +86,42 @@ export default function SignUpSide() {
     setIsLoading(true);
     event.preventDefault();
     const errors = validateForm();
+    
     if (Object.keys(errors).length === 0) {
-
+      
       const data = {
         name: formValues.fullName,
         email: formValues.email,
         password: formValues.password,
-        document: userType === 'cliente' ? formValues.cpf : formValues.cnpj,
+        document: userType === 'cliente' ? removeSpecialCharacters(formValues.cpf) : removeSpecialCharacters(formValues.cnpj),
         type: userType === 'cliente' ? 'c' : 'l',
       };
-      debugger
 
       Register(data)
         .then((res) => {
-          (async () => await renderLerIdentidadesPendentes(res))();
+          (async () => await render(res))();
         })
         .catch((err) => {
           if (err.message.includes("timeout")) {
             alertaErro({ message: "Tempo de espera excedido" });
           } else {
-            alertaErro(err);
+            alertaErro(err.message);
           }
           setIsLoading(false);
         });
     };
   }
 
-  const renderLerIdentidadesPendentes = useCallback(async (res) => {
-    debugger
-
+  const render = useCallback(async (res) => {
     if (res.data && (res.data.status === "Erro") ||
       (res.data.status === "Warning")) {
       setIsLoading(false);
-      alertaErro(res.data);
+      alertaErro(res.data.message);
     } else if (res.data) {
       setRenderizaPagina(true);
       setIsLoading(false);
+      alertaSucesso(res.data.message);
+      navigate('/login');
     } else {
       setIsLoading(false);
       alertaErro("Não foi possível realizar a operação.");
@@ -133,7 +136,7 @@ export default function SignUpSide() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
-      {isLoading && <Loader />}
+        {isLoading && <Loader />}
         <CssBaseline />
         <Box
           sx={{
@@ -147,7 +150,7 @@ export default function SignUpSide() {
             <PersonAddIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Inscrever-se
+            Cadastre-se
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <FormControl component="fieldset" sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
@@ -261,7 +264,7 @@ export default function SignUpSide() {
               sx={{ mt: 3, mb: 2 }}
               disabled={!isFormValid()}
             >
-              Inscrever-se
+              Cadastre-se
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>

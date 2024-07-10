@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace API.Utils
 {
@@ -6,7 +7,7 @@ namespace API.Utils
     {
         private const int SaltSize = 16;
         private const int KeySize = 32;
-        private const int Iterations = 10000; 
+        private const int Iterations = 10000;
 
         public static async Task<string> HashPassword(string password)
         {
@@ -46,6 +47,11 @@ namespace API.Utils
                 }
                 return await Task.FromResult(true);
             }
+        }
+
+        public static async Task<string> RemoveSpecialCharacters(string value)
+        {
+            return await Task.FromResult(Regex.Replace(value, @"[^\d]", string.Empty));
         }
     }
 }

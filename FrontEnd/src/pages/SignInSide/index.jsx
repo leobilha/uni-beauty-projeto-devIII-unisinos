@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useCallback } from "react";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -17,35 +17,106 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 
+import Loader from "../../components/Loader";
+import { Login } from "../../utils/Request/ControllerLogin";
+import { alertaErro } from "../../functions/functions";
+
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [renderizaPagina, setRenderizaPagina] = useState(false);
   const navigate = useNavigate();
-  const [userType, setUserType] = React.useState('cliente');
+  const [userType, setUserType] = useState('cliente');
+  const [formValues, setFormValues] = useState({
+    email: '',
+    password: ''
+  });
+  const [formErrors, setFormErrors] = useState({});
 
   const handleUserTypeChange = (event) => {
     setUserType(event.target.value);
   };
 
+  const handleChange = (event) => {
+    setFormValues({
+      ...formValues,
+      [event.target.name]: event.target.value,
+    });
+    setFormErrors({
+      ...formErrors,
+      [event.target.name]: '',
+    });
+  };
+
+  const validateForm = () => {
+    let errors = {};
+    if (!formValues.email || formValues.email.length < 8) {
+      errors.email = 'O e-mail deve ter pelo menos 8 caracteres';
+    }
+    if (!formValues.password || formValues.password.length < 8) {
+      errors.password = 'A senha deve ter pelo menos 8 caracteres';
+    }
+    return errors;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get('email');
-    const password = data.get('password');
+    const errors = validateForm();
 
-    if (email === 'usuario@exemplo.com' && password === 'senha123') {
-      if (userType === 'cliente') {
-        navigate('/purchase');
-      } else {
-        navigate('/dashboard');
-      }
+    if (Object.keys(errors).length === 0) {
+      const data = {
+        email: formValues.email,
+        type: userType === 'cliente' ? 'c' : 'l',
+        password: formValues.password
+      };
+
+      setIsLoading(true);
+      Login(data)
+        .then((res) => {
+          (async () => await render(res))();
+          if (res.data.status != "Erro") {
+            if (res.data === 'c') {
+              navigate('/purchase');
+            } else if (res.data === 'l') {
+              navigate('/dashboard');
+            } else {
+              navigate('/login');
+            }
+          }
+        })
+        .catch((err) => {
+          if (err.message.includes("timeout")) {
+            alertaErro({ message: "Tempo de espera excedido" });
+          } else {
+            alertaErro(err.message);
+          }
+          setIsLoading(false);
+        });
     } else {
-      alert('Login ou senha incorretos');
+      setFormErrors(errors);
     }
   };
 
+  const render = useCallback(async (res) => {
+    if (res.data && (res.data.status === "Erro") ||
+      (res.data.status === "Warning")) {
+      setIsLoading(false);
+      alertaErro(res.data.message);
+    } else if (res.data) {
+      setRenderizaPagina(true);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+      alertaErro("Não foi possível realizar a operação.");
+    }
+  }, []);
+
+  const isButtonEnabled = formValues.email.length > 0 && formValues.password.length > 0;
+
   return (
     <ThemeProvider theme={defaultTheme}>
+      {isLoading && <Loader />}
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
@@ -101,6 +172,9 @@ export default function SignInSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={handleChange}
+                error={!!formErrors.email}
+                helperText={formErrors.email || ' '}
               />
               <TextField
                 margin="normal"
@@ -111,19 +185,23 @@ export default function SignInSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={handleChange}
+                error={!!formErrors.password}
+                helperText={formErrors.password || ' '}
               />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={!isButtonEnabled}
               >
                 Acessar
               </Button>
               <Grid container>
                 <Grid item>
                   <Link href="/criar" variant="body2">
-                    {"Não tem uma conta? Inscrever-se!"}
+                    {"Não tem uma conta? Cadastre-se!"}
                   </Link>
                 </Grid>
               </Grid>
