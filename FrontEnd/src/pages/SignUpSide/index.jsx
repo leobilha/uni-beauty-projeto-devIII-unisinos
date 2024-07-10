@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState, useCallback } from "react";
+
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -6,7 +7,6 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -16,34 +16,124 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import InputMask from 'react-input-mask';
-import PersonAddIcon from '@mui/icons-material/PersonAdd'; // Importe o ícone de cadastro
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
+import Loader from "../../components/Loader";
+
+import { Register } from "../../utils/Request/ControllerRegister";
+import { alertaErro } from "../../functions/functions";
 
 const defaultTheme = createTheme();
 
 export default function SignUpSide() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [renderizaPagina, setRenderizaPagina] = useState(false);
   const [userType, setUserType] = React.useState('cliente');
+  const [formErrors, setFormErrors] = React.useState({});
+  const [formValues, setFormValues] = React.useState({
+    fullName: '',
+    email: '',
+    password: '',
+    cnpj: '',
+    cpf: '',
+  });
 
   const handleUserTypeChange = (event) => {
     setUserType(event.target.value);
+    setFormErrors({});
+  };
+
+  const handleChange = (event) => {
+    setFormValues({
+      ...formValues,
+      [event.target.name]: event.target.value,
+    });
+    // Limpa o erro quando o usuário começa a digitar novamente
+    setFormErrors({
+      ...formErrors,
+      [event.target.name]: '',
+    });
+  };
+
+  const validateForm = () => {
+    let errors = {};
+    if (!formValues.fullName || formValues.fullName.length < 5) {
+      errors.fullName = 'O nome deve ter pelo menos 5 caracteres';
+    }
+    if (!formValues.email || formValues.email.length < 8) {
+      errors.email = 'O e-mail deve ter pelo menos 8 caracteres';
+    }
+    if (!formValues.password || formValues.password.length < 8) {
+      errors.password = 'A senha deve ter pelo menos 8 caracteres';
+    }
+    if (userType === 'loja') {
+      if (!formValues.cnpj || formValues.cnpj.replace(/[^\d]/g, '').length < 14) {
+        errors.cnpj = 'O CNPJ deve ter pelo menos 14 caracteres';
+      }
+    }
+    if (userType === 'cliente') {
+      if (!formValues.cpf || formValues.cpf.replace(/[^\d]/g, '').length < 11) {
+        errors.cpf = 'O CPF deve ter pelo menos 11 caracteres';
+      }
+    }
+    return errors;
   };
 
   const handleSubmit = (event) => {
+    setIsLoading(true);
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-      userType: userType,
-      firstName: data.get('firstName'),
-      lastName: data.get('lastName'),
-      cnpj: data.get('cnpj'),
-      cpf: data.get('cpf'),
-    });
+    const errors = validateForm();
+    if (Object.keys(errors).length === 0) {
+
+      const data = {
+        name: formValues.fullName,
+        email: formValues.email,
+        password: formValues.password,
+        document: userType === 'cliente' ? formValues.cpf : formValues.cnpj,
+        type: userType === 'cliente' ? 'c' : 'l',
+      };
+      debugger
+
+      Register(data)
+        .then((res) => {
+          (async () => await renderLerIdentidadesPendentes(res))();
+        })
+        .catch((err) => {
+          if (err.message.includes("timeout")) {
+            alertaErro({ message: "Tempo de espera excedido" });
+          } else {
+            alertaErro(err);
+          }
+          setIsLoading(false);
+        });
+    };
+  }
+
+  const renderLerIdentidadesPendentes = useCallback(async (res) => {
+    debugger
+
+    if (res.data && (res.data.status === "Erro") ||
+      (res.data.status === "Warning")) {
+      setIsLoading(false);
+      alertaErro(res.data);
+    } else if (res.data) {
+      setRenderizaPagina(true);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+      alertaErro("Não foi possível realizar a operação.");
+    }
+  }, []);
+
+  const isFormValid = () => {
+    const errors = validateForm();
+    return Object.keys(errors).length === 0;
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
+      {isLoading && <Loader />}
         <CssBaseline />
         <Box
           sx={{
@@ -74,29 +164,20 @@ export default function SignUpSide() {
               </RadioGroup>
             </FormControl>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={userType !== 'loja' ? 6 : 12}>
+              <Grid item xs={12}>
                 <TextField
-                  autoComplete="given-name"
-                  name="firstName"
+                  autoComplete="name"
+                  name="fullName"
                   required
                   fullWidth
-                  id="firstName"
-                  label={userType === 'loja' ? 'Razão Social' : 'Primeiro Nome'}
+                  id="fullName"
+                  label={userType === 'loja' ? 'Razão Social' : 'Nome Completo'}
                   autoFocus
+                  onChange={handleChange}
+                  error={!!formErrors.fullName}
+                  helperText={formErrors.fullName || ' '}
                 />
               </Grid>
-              {userType === 'cliente' && (
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="lastName"
-                    label="Último Nome"
-                    name="lastName"
-                    autoComplete="family-name"
-                  />
-                </Grid>
-              )}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -105,6 +186,9 @@ export default function SignUpSide() {
                   label="Endereço de E-mail"
                   name="email"
                   autoComplete="email"
+                  onChange={handleChange}
+                  error={!!formErrors.email}
+                  helperText={formErrors.email || ' '}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -116,6 +200,9 @@ export default function SignUpSide() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={handleChange}
+                  error={!!formErrors.password}
+                  helperText={formErrors.password || ' '}
                 />
               </Grid>
               {userType === 'loja' && (
@@ -123,6 +210,8 @@ export default function SignUpSide() {
                   <InputMask
                     mask="99.999.999/9999-99"
                     maskChar={null}
+                    value={formValues.cnpj}
+                    onChange={handleChange}
                   >
                     {(inputProps) => (
                       <TextField
@@ -133,6 +222,8 @@ export default function SignUpSide() {
                         label="CNPJ"
                         id="cnpj"
                         autoComplete="cnpj"
+                        error={!!formErrors.cnpj}
+                        helperText={formErrors.cnpj || ' '}
                       />
                     )}
                   </InputMask>
@@ -143,6 +234,8 @@ export default function SignUpSide() {
                   <InputMask
                     mask="999.999.999-99"
                     maskChar={null}
+                    value={formValues.cpf}
+                    onChange={handleChange}
                   >
                     {(inputProps) => (
                       <TextField
@@ -153,6 +246,8 @@ export default function SignUpSide() {
                         label="CPF"
                         id="cpf"
                         autoComplete="cpf"
+                        error={!!formErrors.cpf}
+                        helperText={formErrors.cpf || ' '}
                       />
                     )}
                   </InputMask>
@@ -164,6 +259,7 @@ export default function SignUpSide() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={!isFormValid()}
             >
               Inscrever-se
             </Button>
