@@ -6,6 +6,7 @@ import SignInSide from "../pages/SignInSide";
 import SignUpSide from "../pages/SignUpSide";
 import Dashboard from "../pages/Dashboard";
 import Purchase from "../pages/Purchase";
+import Checkout from "../pages/Checkout";
 
 const Router = () => {
   return (
@@ -19,7 +20,8 @@ const Router = () => {
             <Route path="/login" element={<SignInSide />} />
             <Route path="/criar" element={<SignUpSide />} />
             <Route path="/dashboard" element={<Dashboard  />} />
-            <Route path="/purchase" element={<Purchase  />} />
+            <Route path="/purchase" element={<Purchase />} />
+            <Route path="/checkout" element={<Checkout />} />
           </Routes>
         </BrowserRouter>
       </React.StrictMode>

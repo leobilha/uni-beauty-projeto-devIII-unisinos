@@ -40,7 +40,7 @@ export default function Dashboard() {
   };
 
   const handleModuleClick = (module) => {
-    alert(`Módulo ${module} clicado!`);
+    navigate('/checkout');
   };
 
   return (
