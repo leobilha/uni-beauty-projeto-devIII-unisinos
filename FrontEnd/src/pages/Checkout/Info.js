@@ -5,6 +5,8 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
 
 const products = [
   {
@@ -30,6 +32,12 @@ const products = [
 ];
 
 function Info({ totalPrice }) {
+  const navigate = useNavigate();
+
+  const handleNavigateToDashboard = () => {
+    navigate('/dashboard');
+  };
+
   return (
     <React.Fragment>
       <Typography variant="subtitle2" color="text.secondary">
@@ -52,6 +60,18 @@ function Info({ totalPrice }) {
           </ListItem>
         ))}
       </List>
+
+      <Button
+        variant="outlined"
+        sx={{
+          alignSelf: 'start',
+          top: '50px',
+          width: { xs: '100%', sm: 'auto' },
+        }}
+        onClick={handleNavigateToDashboard}
+      >
+        Voltar ao Dashboard
+      </Button>
     </React.Fragment>
   );
 }

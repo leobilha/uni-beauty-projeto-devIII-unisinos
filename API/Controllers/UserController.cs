@@ -12,10 +12,7 @@ namespace API.Controllers
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
-        {
-            _userService = userService;
-        }
+        public UserController(IUserService userService) => _userService = userService;
 
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] GetUserDto userRequest)

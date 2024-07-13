@@ -36,6 +36,8 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('userType');
     navigate('/login');
   };
 
@@ -62,14 +64,14 @@ export default function Dashboard() {
         <Grid item xs={4}>
           <Item>
             <BackgroundImage style={{ backgroundImage: 'url(https://source.unsplash.com/random/800x600?products)' }}>
-              Ver Produtos
+              Minhas Compras
             </BackgroundImage>
           </Item>
         </Grid>
         <Grid item xs={4}>
           <Item>
             <BackgroundImage style={{ backgroundImage: 'url(https://source.unsplash.com/random/800x600?shopping)' }}>
-              Minhas Compras
+              Adicionar Produtos
             </BackgroundImage>
           </Item>
         </Grid>
@@ -83,7 +85,7 @@ export default function Dashboard() {
         <Grid item xs={4}>
           <Item>
             <BackgroundImage style={{ backgroundImage: 'url(https://source.unsplash.com/random/800x600?services)' }}>
-              Contratar Serviços
+              Adicionar Serviços
             </BackgroundImage>
           </Item>
         </Grid>

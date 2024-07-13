@@ -29,6 +29,8 @@ import { removeSpecialCharacters } from "../../utils/Utils";
 const defaultTheme = createTheme();
 
 export default function SignUpSide() {
+  localStorage.removeItem('isAuthenticated');
+  localStorage.removeItem('userType');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [renderizaPagina, setRenderizaPagina] = useState(false);
@@ -104,7 +106,9 @@ export default function SignUpSide() {
         .catch((err) => {
           if (err.message.includes("timeout")) {
             alertaErro({ message: "Tempo de espera excedido" });
-          } else {
+          } else if (err.message.includes("Network")) {
+            alertaErro({ message: "Servidor fora de uso" });
+          }  else {
             alertaErro(err.message);
           }
           setIsLoading(false);

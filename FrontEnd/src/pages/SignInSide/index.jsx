@@ -24,8 +24,9 @@ import { alertaErro } from "../../functions/functions";
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
+  localStorage.removeItem('isAuthenticated');
+  localStorage.removeItem('userType');
   const [isLoading, setIsLoading] = useState(false);
-  const [renderizaPagina, setRenderizaPagina] = useState(false);
   const navigate = useNavigate();
   const [userType, setUserType] = useState('cliente');
   const [formValues, setFormValues] = useState({
@@ -76,6 +77,8 @@ export default function SignInSide() {
         .then((res) => {
           (async () => await render(res))();
           if (res.data.status != "Erro") {
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('userType', data.type);
             if (res.data === 'c') {
               navigate('/purchase');
             } else if (res.data === 'l') {
@@ -85,9 +88,11 @@ export default function SignInSide() {
             }
           }
         })
-        .catch((err) => {
+        .catch((err) => {          
           if (err.message.includes("timeout")) {
             alertaErro({ message: "Tempo de espera excedido" });
+          } else if (err.message.includes("Network")) {
+            alertaErro({ message: "Servidor fora de uso" });
           } else {
             alertaErro(err.message);
           }
@@ -104,7 +109,6 @@ export default function SignInSide() {
       setIsLoading(false);
       alertaErro(res.data.message);
     } else if (res.data) {
-      setRenderizaPagina(true);
       setIsLoading(false);
     } else {
       setIsLoading(false);

@@ -9,10 +9,7 @@ namespace API.Service.Implementations
     {
         private readonly IUserRepository _userRepository;
 
-        public UserService(IUserRepository userRepository)
-        {
-            _userRepository = userRepository;
-        }
+        public UserService(IUserRepository userRepository) => _userRepository = userRepository;
 
         public async Task<User> GetAsync(GetUserDto userDto) => await _userRepository.GetAsync(u => u.Email == userDto.Email && 
                                                                                                     u.Type == userDto.Type);

@@ -30,6 +30,8 @@ export default function SignInSide() {
   }, []);
 
   const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('userType');
     navigate('/login');
   };
 

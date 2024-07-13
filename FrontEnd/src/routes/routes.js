@@ -7,6 +7,7 @@ import SignUpSide from "../pages/SignUpSide";
 import Dashboard from "../pages/Dashboard";
 import Purchase from "../pages/Purchase";
 import Checkout from "../pages/Checkout";
+import ProtectedRoute from '../components/ProtectedRoute';
 
 const Router = () => {
   return (
@@ -19,9 +20,15 @@ const Router = () => {
             <Route path="*" element={<SignInSide />} />
             <Route path="/login" element={<SignInSide />} />
             <Route path="/criar" element={<SignUpSide />} />
-            <Route path="/dashboard" element={<Dashboard  />} />
-            <Route path="/purchase" element={<Purchase />} />
-            <Route path="/checkout" element={<Checkout />} />
+            
+            <Route element={<ProtectedRoute allowedTypes={['c']} />}>
+              <Route path="/purchase" element={<Purchase />} />
+            </Route>
+
+            <Route element={<ProtectedRoute allowedTypes={['l']} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/checkout" element={<Checkout />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </React.StrictMode>
